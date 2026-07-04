@@ -1,0 +1,2 @@
+# Ignore large game disc images in the repository root games directory
+games/*.iso
