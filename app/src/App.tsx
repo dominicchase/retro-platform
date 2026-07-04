@@ -1,20 +1,23 @@
 import "./App.css";
 
 function App() {
-  const games = [
-    { id: 1, title: "God of War" },
-    { id: 2, title: "Final Fantasy X" },
-  ];
+  const games = [{ id: 1, title: "Dark Cloud" }];
 
   return (
     <>
       {games.map((game) => (
         <div>
-          <p>{game.title}</p>
+          <button onClick={() => launchGame(game.title)}>{game.title}</button>
         </div>
       ))}
     </>
   );
+
+  function launchGame(gameTitle: string) {
+    window.electronAPI.launchGame(
+      `C:\\GitHub\\retro-platform\\games\\${gameTitle}.iso`,
+    );
+  }
 }
 
 export default App;
