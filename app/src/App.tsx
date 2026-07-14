@@ -1,22 +1,31 @@
 import "./App.css";
+import src from "../../data/artwork/covers/chrono-trigger.jpg";
 
 function App() {
-  const games = [{ id: 1, title: "Dark Cloud" }];
+  const games = [
+    { id: 1, title: "Chrono Trigger", cover: "chrono-trigger.jpg" },
+  ];
 
   return (
     <>
       {games.map((game) => (
         <div>
-          <button onClick={() => launchGame(game.title)}>{game.title}</button>
+          <img
+            width={400}
+            src={src}
+            onClick={() => launchGame(game.title)}
+            alt={game.title}
+          />
         </div>
       ))}
     </>
   );
 
   function launchGame(gameTitle: string) {
-    window.electronAPI.launchGame(
-      `C:\\GitHub\\retro-platform\\games\\${gameTitle}.iso`,
-    );
+    console.log(gameTitle);
+    // window.electronAPI.launchGame(
+    //   `C:\\GitHub\\retro-platform\\games\\${gameTitle}.iso`,
+    // );
   }
 }
 
