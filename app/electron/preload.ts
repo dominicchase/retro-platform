@@ -1,28 +1,8 @@
-import { ipcRenderer, contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
+import type { Game } from "./services/game-scanner";
 
-// --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld("ipcRenderer", {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
-    const [channel, listener] = args;
-    return ipcRenderer.on(channel, (event, ...args) =>
-      listener(event, ...args),
-    );
+contextBridge.exposeInMainWorld("api", {
+  getSNESGames: async (): Promise<Game[]> => {
+    return ipcRenderer.invoke("snes:games:get");
   },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.off(channel, ...omit);
-  },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.send(channel, ...omit);
-  },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-    const [channel, ...omit] = args;
-    return ipcRenderer.invoke(channel, ...omit);
-  },
-});
-
-contextBridge.exposeInMainWorld("electronAPI", {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  launchGame: (gamePath: any) => ipcRenderer.invoke("launch-game", gamePath),
 });

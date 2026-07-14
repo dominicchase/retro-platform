@@ -1,10 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export {};
 
 declare global {
+  interface Game {
+    title: string;
+    romPath: string;
+    coverPath: string;
+    system: "SNES";
+  }
+
   interface Window {
-    electronAPI: {
-      launchGame: (gamePath: string) => Promise<any>;
+    api: {
+      getSNESGames: () => Promise<Game[]>;
     };
   }
 }

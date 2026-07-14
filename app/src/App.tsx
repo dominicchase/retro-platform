@@ -1,21 +1,29 @@
 import "./App.css";
-import src from "../../data/artwork/covers/chrono-trigger.jpg";
+import { useEffect, useState } from "react";
 
 function App() {
-  const games = [
-    { id: 1, title: "Chrono Trigger", cover: "chrono-trigger.jpg" },
-  ];
+  const [games, setGames] = useState<Game[]>([]);
+
+  useEffect(() => {
+    window.api.getSNESGames().then((games) => {
+      setGames(games);
+    });
+  }, []);
 
   return (
     <>
       {games.map((game) => (
         <div>
+          <h3>{game.title}</h3>
+          <h5>{game.system}</h5>
           <img
             width={400}
-            src={src}
+            // src={src}
             onClick={() => launchGame(game.title)}
             alt={game.title}
           />
+          <p>{game.romPath}</p>
+          <p>{game.coverPath}</p>
         </div>
       ))}
     </>
