@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./library.css";
+import { Game } from "../../../electron/shared/types";
 
 export function Library() {
   const [games, setGames] = useState<Game[]>([]);

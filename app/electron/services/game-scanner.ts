@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { System } from "../../src/types/global";
+import { Game, System } from "../shared/types";
 
 export class GameScanner {
   async scanDirectory(directory: string): Promise<Game[]> {

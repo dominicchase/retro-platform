@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { System } from "../src/types/global";
+import { Game, System } from "./shared/types";
 
 contextBridge.exposeInMainWorld("api", {
   getGames: async (system: System): Promise<Game[]> => {

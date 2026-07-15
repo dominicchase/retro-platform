@@ -1,7 +1,23 @@
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 import { protocol, ipcMain, app, BrowserWindow } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs/promises";
+function registerRetroProtocol() {
+  protocol.handle("retro", async (request) => {
+    const url = new URL(request.url);
+    const relativePath = path.join(url.hostname, url.pathname.slice(1));
+    const filePath = path.join(process.cwd(), "..", "data", relativePath);
+    const file = await fs.readFile(filePath);
+    return new Response(file, {
+      headers: {
+        "Content-Type": "image/png"
+      }
+    });
+  });
+}
 class GameScanner {
   async scanDirectory(directory) {
     const games = [];
@@ -39,27 +55,59 @@ class GameScanner {
     return `${system.toLowerCase()}-${slug}`;
   }
 }
-function registerRetroProtocol() {
-  protocol.handle("retro", async (request) => {
-    const url = new URL(request.url);
-    const relativePath = path.join(url.hostname, url.pathname.slice(1));
-    const filePath = path.join(process.cwd(), "..", "data", relativePath);
-    const file = await fs.readFile(filePath);
-    return new Response(file, {
-      headers: {
-        "Content-Type": "image/png"
-      }
-    });
-  });
+const DATA_DIRECTORY = path.resolve(process.cwd(), "..", "data");
+const GAMES_DIRECTORY = path.join(DATA_DIRECTORY, "games");
+class GameRepository {
+  constructor() {
+    __publicField(this, "gamesFile", path.join(DATA_DIRECTORY, "games.json"));
+  }
+  async getGames() {
+    const data = await fs.readFile(this.gamesFile, "utf-8");
+    return JSON.parse(data);
+  }
+  async getGame(gameId) {
+    const games = await this.getGames();
+    return games.find((game) => game.id === gameId);
+  }
+  async saveGames(games) {
+    await fs.writeFile(this.gamesFile, JSON.stringify(games));
+  }
+}
+function registerScannerIpc() {
+  const scanner = new GameScanner();
+  const repository = new GameRepository();
+  ipcMain.handle(
+    "games:get",
+    async (_event, system) => {
+      const gamesDirectory = path.join(GAMES_DIRECTORY, system);
+      const games = scanner.scanDirectory(gamesDirectory);
+      await repository.saveGames(await games);
+      return games;
+    }
+  );
 }
 class GameLauncher {
   async launch(gameId) {
+    const repository = new GameRepository();
     console.log(gameId);
+    const game = await repository.getGame(gameId);
+    console.log(game);
   }
 }
+function registerLauncherIpc() {
+  const launcher = new GameLauncher();
+  ipcMain.handle(
+    "game:launch",
+    async (_event, gameId) => {
+      return launcher.launch(gameId);
+    }
+  );
+}
+function registerIpcHandlers() {
+  registerScannerIpc();
+  registerLauncherIpc();
+}
 const __dirname$1 = path.dirname(fileURLToPath(import.meta.url));
-const scanner = new GameScanner();
-const launcher = new GameLauncher();
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1900,
@@ -77,22 +125,9 @@ function createWindow() {
   }
   mainWindow.webContents.openDevTools();
 }
-ipcMain.handle("games:get", async (_event, system) => {
-  const gamesDirectory = path.join(
-    __dirname$1,
-    "..",
-    "..",
-    "data",
-    "games",
-    system
-  );
-  return scanner.scanDirectory(gamesDirectory);
-});
-ipcMain.handle("game:launch", async (_event, gameId) => {
-  return launcher.launch(gameId);
-});
 app.whenReady().then(() => {
   registerRetroProtocol();
+  registerIpcHandlers();
   createWindow();
 });
 app.on("window-all-closed", () => {
