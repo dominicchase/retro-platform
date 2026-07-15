@@ -3,14 +3,15 @@ import path from "node:path";
 import { Game, System } from "../shared/types";
 
 export class GameScanner {
-  async scanDirectory(directory: string): Promise<Game[]> {
+  async scanDirectory(directory: string, system: System): Promise<Game[]> {
     const games: Game[] = [];
-    await this.scanSystemDirectory(directory, games);
+    await this.scanSystemDirectory(directory, system, games);
     return games;
   }
 
   private async scanSystemDirectory(
     directory: string,
+    system: System,
     games: Game[],
   ): Promise<void> {
     const entries = await fs.readdir(directory, { withFileTypes: true });
@@ -20,7 +21,6 @@ export class GameScanner {
 
       if (!entry.isFile()) continue;
 
-      const system = path.basename(directory) as System;
       const id = this.createGameId(system, entry.name);
       const title = this.parseTitle(entry.name);
       const coverFile = this.createSlug(title) + ".png";

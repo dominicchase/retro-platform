@@ -1,8 +1,9 @@
 import { ipcMain } from "electron";
-import { GameLauncher } from "../services/game-launcher";
+import { GameLauncher } from "../services/GameLauncher";
+import { GameRepository } from "../repositories/GameRepository";
 
 export function registerLauncherIpc() {
-  const launcher = new GameLauncher();
+  const launcher = new GameLauncher(new GameRepository());
 
   ipcMain.handle(
     "game:launch",

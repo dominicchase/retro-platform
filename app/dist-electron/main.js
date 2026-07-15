@@ -19,17 +19,16 @@ function registerRetroProtocol() {
   });
 }
 class GameScanner {
-  async scanDirectory(directory) {
+  async scanDirectory(directory, system) {
     const games = [];
-    await this.scanSystemDirectory(directory, games);
+    await this.scanSystemDirectory(directory, system, games);
     return games;
   }
-  async scanSystemDirectory(directory, games) {
+  async scanSystemDirectory(directory, system, games) {
     const entries = await fs.readdir(directory, { withFileTypes: true });
     for (const entry of entries) {
       const entryPath = path.join(directory, entry.name);
       if (!entry.isFile()) continue;
-      const system = path.basename(directory);
       const id = this.createGameId(system, entry.name);
       const title = this.parseTitle(entry.name);
       const coverFile = this.createSlug(title) + ".png";
@@ -57,7 +56,7 @@ class GameScanner {
 }
 const DATA_DIRECTORY = path.resolve(process.cwd(), "..", "data");
 const GAMES_DIRECTORY = path.join(DATA_DIRECTORY, "games");
-class GameRepository {
+let GameRepository$1 = class GameRepository {
   constructor() {
     __publicField(this, "gamesFile", path.join(DATA_DIRECTORY, "games.json"));
   }
@@ -72,30 +71,40 @@ class GameRepository {
   async saveGames(games) {
     await fs.writeFile(this.gamesFile, JSON.stringify(games));
   }
-}
+};
 function registerScannerIpc() {
   const scanner = new GameScanner();
-  const repository = new GameRepository();
+  const repository = new GameRepository$1();
   ipcMain.handle(
     "games:get",
     async (_event, system) => {
       const gamesDirectory = path.join(GAMES_DIRECTORY, system);
-      const games = scanner.scanDirectory(gamesDirectory);
+      const games = scanner.scanDirectory(gamesDirectory, system);
       await repository.saveGames(await games);
       return games;
     }
   );
 }
 class GameLauncher {
+  constructor(repository) {
+    this.repository = repository;
+  }
   async launch(gameId) {
-    const repository = new GameRepository();
-    console.log(gameId);
-    const game = await repository.getGame(gameId);
+    const game = await this.repository.getGame(gameId);
+    if (!game) {
+      throw Error(`Game ${gameId} not found`);
+    }
+    switch (game.system) {
+      case "SNES":
+        return this.launchSnes(game);
+    }
+  }
+  async launchSnes(game) {
     console.log(game);
   }
 }
 function registerLauncherIpc() {
-  const launcher = new GameLauncher();
+  const launcher = new GameLauncher(new GameRepository$1());
   ipcMain.handle(
     "game:launch",
     async (_event, gameId) => {
