@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { GameScanner, Game } from "./services/game-scanner";
+import { GameScanner } from "./services/game-scanner";
+import { System } from "../src/types/global";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scanner = new GameScanner();
@@ -26,14 +27,14 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 }
 
-ipcMain.handle("snes:games:get", async (): Promise<Game[]> => {
+ipcMain.handle("games:get", async (_event, system: System): Promise<Game[]> => {
   const gamesDirectory = path.join(
     __dirname,
     "..",
     "..",
     "data",
     "games",
-    "SNES",
+    system,
   );
 
   return scanner.scanDirectory(gamesDirectory);

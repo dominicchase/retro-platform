@@ -1,16 +1,18 @@
 export {};
 
+export type System = "SNES";
+
 declare global {
   interface Game {
     title: string;
+    coverFile: string;
+    system: System;
     romPath: string;
-    coverPath: string;
-    system: "SNES";
   }
 
   interface Window {
     api: {
-      getSNESGames: () => Promise<Game[]>;
+      getGames: (system: System) => Promise<Game[]>;
     };
   }
 }

@@ -5,7 +5,7 @@ function App() {
   const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
-    window.api.getSNESGames().then((games) => {
+    window.api.getGames("SNES").then((games) => {
       setGames(games);
     });
   }, []);
@@ -18,12 +18,10 @@ function App() {
           <h5>{game.system}</h5>
           <img
             width={400}
-            // src={src}
+            src={`retro://covers/${game.coverFile}`}
             onClick={() => launchGame(game.title)}
             alt={game.title}
           />
-          <p>{game.romPath}</p>
-          <p>{game.coverPath}</p>
         </div>
       ))}
     </>

@@ -1,8 +1,8 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { Game } from "./services/game-scanner";
+import { System } from "../src/types/global";
 
 contextBridge.exposeInMainWorld("api", {
-  getSNESGames: async (): Promise<Game[]> => {
-    return ipcRenderer.invoke("snes:games:get");
+  getGames: async (system: System): Promise<Game[]> => {
+    return ipcRenderer.invoke("games:get", system);
   },
 });
