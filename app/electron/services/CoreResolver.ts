@@ -1,7 +1,7 @@
 import { Core, System } from "../shared/types";
 
 export class CoreResolver {
-  async getCore(system: System): Promise<Core | null> {
+  getCore(system: System): Core | null {
     switch (system) {
       case "SNES":
         return "snes9x";
