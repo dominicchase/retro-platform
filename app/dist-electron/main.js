@@ -1,4 +1,4 @@
-import { ipcMain, app, BrowserWindow } from "electron";
+import { protocol, ipcMain, app, BrowserWindow } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs/promises";
@@ -14,9 +14,10 @@ class GameScanner {
       const entryPath = path.join(directory, entry.name);
       if (!entry.isFile()) continue;
       const title = this.parseTitle(entry.name);
-      const coverFile = title.toLowerCase().replace(" ", "-") + ".png";
+      const coverFile = this.createSlug(title) + ".png";
       games.push({
         title,
+        // TODO: generalize system here
         system: "SNES",
         romPath: entryPath,
         coverFile
@@ -26,6 +27,22 @@ class GameScanner {
   parseTitle(fileName) {
     return fileName.replace(/\.[^.]+$/, "");
   }
+  createSlug(title) {
+    return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  }
+}
+function registerRetroProtocol() {
+  protocol.handle("retro", async (request) => {
+    const url = new URL(request.url);
+    const relativePath = path.join(url.hostname, url.pathname.slice(1));
+    const filePath = path.join(process.cwd(), "..", "data", relativePath);
+    const file = await fs.readFile(filePath);
+    return new Response(file, {
+      headers: {
+        "Content-Type": "image/png"
+      }
+    });
+  });
 }
 const __dirname$1 = path.dirname(fileURLToPath(import.meta.url));
 const scanner = new GameScanner();
@@ -57,7 +74,10 @@ ipcMain.handle("games:get", async (_event, system) => {
   );
   return scanner.scanDirectory(gamesDirectory);
 });
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  registerRetroProtocol();
+  createWindow();
+});
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();

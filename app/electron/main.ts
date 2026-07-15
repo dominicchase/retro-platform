@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { GameScanner } from "./services/game-scanner";
 import { System } from "../src/types/global";
+import { registerRetroProtocol } from "./protocols/retroProtocol";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scanner = new GameScanner();
@@ -40,7 +41,11 @@ ipcMain.handle("games:get", async (_event, system: System): Promise<Game[]> => {
   return scanner.scanDirectory(gamesDirectory);
 });
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  registerRetroProtocol();
+
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

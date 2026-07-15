@@ -1,0 +1,14 @@
+.library {
+}
+
+.games-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}

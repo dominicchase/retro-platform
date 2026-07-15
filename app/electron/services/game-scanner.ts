@@ -19,10 +19,11 @@ export class GameScanner {
       if (!entry.isFile()) continue;
 
       const title = this.parseTitle(entry.name);
-      const coverFile = title.toLowerCase().replace(" ", "-") + ".png";
+      const coverFile = this.createSlug(title) + ".png";
 
       games.push({
         title,
+        // TODO: generalize system here
         system: "SNES",
         romPath: entryPath,
         coverFile,
@@ -32,5 +33,12 @@ export class GameScanner {
 
   private parseTitle(fileName: string): string {
     return fileName.replace(/\.[^.]+$/, "");
+  }
+
+  private createSlug(title: string) {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
   }
 }
