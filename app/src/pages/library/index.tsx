@@ -6,17 +6,19 @@ export function Library() {
 
   useGetGames();
 
+  console.log("games: ", games);
+
   return (
     <div className="library">
       <div className="games-container">
         {games.map((game) => (
-          <div className="game">
+          <div className="game" key={game.id}>
             <h3 className="mb-3">{game.title}</h3>
             <h5 className="mb-4">{game.system}</h5>
             <img
               width={256}
               src={`retro://artwork/covers/${game.coverFile}`}
-              onClick={() => launchGame(game.title)}
+              onClick={() => launchGame(game.id)}
               alt={game.title}
             />
           </div>
@@ -33,10 +35,7 @@ export function Library() {
     }, []);
   }
 
-  function launchGame(gameTitle: string) {
-    console.log(gameTitle);
-    // window.electronAPI.launchGame(
-    //   `C:\\GitHub\\retro-platform\\games\\${gameTitle}.iso`,
-    // );
+  function launchGame(gameId: string) {
+    window.api.launchGame(gameId);
   }
 }

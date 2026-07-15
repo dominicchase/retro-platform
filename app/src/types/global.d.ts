@@ -4,6 +4,7 @@ export type System = "SNES";
 
 declare global {
   interface Game {
+    id: string;
     title: string;
     coverFile: string;
     system: System;
@@ -13,6 +14,7 @@ declare global {
   interface Window {
     api: {
       getGames: (system: System) => Promise<Game[]>;
+      launchGame: (gameId: string) => Promise<void>;
     };
   }
 }

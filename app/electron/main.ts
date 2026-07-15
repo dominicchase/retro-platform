@@ -4,9 +4,11 @@ import { fileURLToPath } from "node:url";
 import { GameScanner } from "./services/game-scanner";
 import { System } from "../src/types/global";
 import { registerRetroProtocol } from "./protocols/retroProtocol";
+import { GameLauncher } from "./services/game-launcher";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const scanner = new GameScanner();
+const launcher = new GameLauncher();
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -41,9 +43,12 @@ ipcMain.handle("games:get", async (_event, system: System): Promise<Game[]> => {
   return scanner.scanDirectory(gamesDirectory);
 });
 
+ipcMain.handle("game:launch", async (_event, gameId: string): Promise<void> => {
+  return launcher.launch(gameId);
+});
+
 app.whenReady().then(() => {
   registerRetroProtocol();
-
   createWindow();
 });
 

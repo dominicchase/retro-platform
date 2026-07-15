@@ -13,12 +13,14 @@ class GameScanner {
     for (const entry of entries) {
       const entryPath = path.join(directory, entry.name);
       if (!entry.isFile()) continue;
+      const system = path.basename(directory);
+      const id = this.createGameId(system, entry.name);
       const title = this.parseTitle(entry.name);
       const coverFile = this.createSlug(title) + ".png";
       games.push({
+        id,
         title,
-        // TODO: generalize system here
-        system: "SNES",
+        system,
         romPath: entryPath,
         coverFile
       });
@@ -29,6 +31,12 @@ class GameScanner {
   }
   createSlug(title) {
     return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  }
+  //   TODO: eventually move to hashed IDs or something else
+  createGameId(system, filename) {
+    const name = path.parse(filename).name;
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return `${system.toLowerCase()}-${slug}`;
   }
 }
 function registerRetroProtocol() {
@@ -44,8 +52,14 @@ function registerRetroProtocol() {
     });
   });
 }
+class GameLauncher {
+  async launch(gameId) {
+    console.log(gameId);
+  }
+}
 const __dirname$1 = path.dirname(fileURLToPath(import.meta.url));
 const scanner = new GameScanner();
+const launcher = new GameLauncher();
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1900,
@@ -73,6 +87,9 @@ ipcMain.handle("games:get", async (_event, system) => {
     system
   );
   return scanner.scanDirectory(gamesDirectory);
+});
+ipcMain.handle("game:launch", async (_event, gameId) => {
+  return launcher.launch(gameId);
 });
 app.whenReady().then(() => {
   registerRetroProtocol();
