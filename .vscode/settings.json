@@ -1,3 +1,4 @@
 {
-  "cmake.sourceDirectory": "C:/GitHub/retro-platform/app/native/libretro-runner"
+  "cmake.sourceDirectory": "C:/GitHub/retro-platform/native/libretro-runner",
+  "cmake.buildDirectory": "C:/GitHub/retro-platform/native/libretro-runner/build"
 }
