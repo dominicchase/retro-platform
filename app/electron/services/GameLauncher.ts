@@ -1,7 +1,6 @@
 import { GameRepository } from "../repositories/GameRepository";
 import { CoreResolver } from "./CoreResolver";
 import { LibretroRunner } from "./LibretroRunner";
-import { Game } from "../shared/types";
 
 export class GameLauncher {
   constructor(
@@ -17,12 +16,15 @@ export class GameLauncher {
       throw Error(`Game ${gameId} not found`);
     }
 
-    const core = this.core.getCore(game.system);
+    const corePath = this.core.getCorePath(game.system);
 
-    console.log(core);
+    this.launchSnes(corePath, game.romPath);
   }
 
-  private async launchSnes(game: Game) {
-    console.log(game);
+  private async launchSnes(
+    corePath: string | null,
+    romPath: string,
+  ): Promise<void> {
+    this.libretro.launch(corePath, romPath);
   }
 }
