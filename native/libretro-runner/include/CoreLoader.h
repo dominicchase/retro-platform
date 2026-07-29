@@ -6,10 +6,11 @@
 class CoreLoader
 {
 public:
-    bool load(const std::string& path);
-    void* getFunction(const char* name);
+    bool load(const std::string &path);
+    void *getFunction(const char *name);
+
+    ~CoreLoader();
 
 private:
     HMODULE handle = nullptr;
-
 };
