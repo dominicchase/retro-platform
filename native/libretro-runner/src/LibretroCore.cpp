@@ -34,7 +34,12 @@ void video_callback(
     unsigned height,
     size_t pitch)
 {
-    // TODO: render video later
+
+    std::cout << "Video: "
+              << width
+              << "x"
+              << height
+              << std::endl;
 }
 
 void audio_sample_callback(
@@ -101,6 +106,10 @@ bool LibretroCore::load(CoreLoader &loader)
         reinterpret_cast<bool (*)(const retro_game_info *)>(
             loader.getFunction("retro_load_game"));
 
+    retro_run =
+        reinterpret_cast<void (*)()>(
+            loader.getFunction("retro_run"));
+
     retro_get_system_info =
         reinterpret_cast<void (*)(retro_system_info *)>(
             loader.getFunction("retro_get_system_info"));
@@ -116,7 +125,10 @@ bool LibretroCore::load(CoreLoader &loader)
         !retro_set_audio_sample_batch ||
         !retro_set_input_poll ||
         !retro_set_input_state ||
-        !retro_load_game || !retro_get_system_info || !retro_get_system_av_info)
+        !retro_load_game ||
+        !retro_run ||
+        !retro_get_system_info ||
+        !retro_get_system_av_info)
     {
         std::cout << "Failed to load libretro functions\n";
         return false;
@@ -187,4 +199,9 @@ bool LibretroCore::loadGame(const std::string &path)
               << std::endl;
 
     return result;
+}
+
+void LibretroCore::runFrame()
+{
+    retro_run();
 }

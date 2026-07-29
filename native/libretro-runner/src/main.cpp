@@ -46,5 +46,9 @@ int main(int argc, char *argv[])
 
     std::cout << "ROM loaded!\n";
 
+    core.runFrame();
+
+    std::cout << "Frame run!\n";
+
     return 0;
 }

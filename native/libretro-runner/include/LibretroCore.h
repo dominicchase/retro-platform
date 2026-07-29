@@ -42,6 +42,8 @@ private:
     bool (*retro_load_game)(
         const retro_game_info *) = nullptr;
 
+    void (*retro_run)() = nullptr;
+
     void (*retro_get_system_info)(
         retro_system_info *) = nullptr;
 
