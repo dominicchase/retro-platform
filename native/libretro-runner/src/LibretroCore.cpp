@@ -5,27 +5,19 @@
 
 bool environment_callback(unsigned cmd, void *data)
 {
-    std::cout << "Environment command: "
-              << cmd
-              << std::endl;
-
-    if (cmd == RETRO_ENVIRONMENT_SET_PIXEL_FORMAT)
+    switch (cmd)
     {
+    case RETRO_ENVIRONMENT_SET_PIXEL_FORMAT:
+        std::cout << "Set pixel format\n";
         return true;
-    }
 
-    if (cmd == RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY)
-    {
-        const char **dir = static_cast<const char **>(data);
-
-        std::string systemDirectory;
-
-        *dir = systemDirectory.c_str();
-
+    case RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY:
+        std::cout << "Get system directory\n";
         return true;
-    }
 
-    return false;
+    default:
+        return false;
+    }
 }
 
 void video_callback(
@@ -34,12 +26,18 @@ void video_callback(
     unsigned height,
     size_t pitch)
 {
+    static int frameCount = 0;
 
-    std::cout << "Video: "
-              << width
-              << "x"
-              << height
-              << std::endl;
+    frameCount++;
+
+    if (frameCount == 1)
+    {
+        std::cout << "First video frame: "
+                  << width
+                  << "x"
+                  << height
+                  << std::endl;
+    }
 }
 
 void audio_sample_callback(

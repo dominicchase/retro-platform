@@ -1,4 +1,7 @@
+#define SDL_MAIN_HANDLED
+
 #include <iostream>
+#include <SDL2/SDL.h>
 #include "CoreLoader.h"
 #include "LibretroCore.h"
 
@@ -46,9 +49,63 @@ int main(int argc, char *argv[])
 
     std::cout << "ROM loaded!\n";
 
-    core.runFrame();
+    if (SDL_Init(SDL_INIT_VIDEO) != 0)
+    {
+        std::cout << "SDL init failed: "
+                  << SDL_GetError()
+                  << std::endl;
 
-    std::cout << "Frame run!\n";
+        return 1;
+    }
+
+    SDL_Window *window =
+        SDL_CreateWindow(
+            "Retro Platform",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            512,
+            448,
+            0);
+
+    if (!window)
+    {
+        std::cout << "SDL window failed: "
+                  << SDL_GetError()
+                  << std::endl;
+
+        return 1;
+    }
+
+    std::cout << "SDL window created\n";
+
+    for (int i = 0; i < 60; i++)
+    {
+        core.runFrame();
+    }
+
+    std::cout << "Finished running 60 frames.\n";
+
+    bool running = true;
+
+    SDL_Event event;
+
+    while (running)
+    {
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
+                running = false;
+            }
+        }
+
+        core.runFrame();
+
+        SDL_Delay(16);
+    }
+
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
     return 0;
 }
