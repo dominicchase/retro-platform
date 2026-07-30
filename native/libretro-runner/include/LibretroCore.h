@@ -1,9 +1,11 @@
 #pragma once
 
+class AudioManager;
+class VideoRenderer;
+class InputManager;
+
 #include "libretro.h"
 #include "CoreLoader.h"
-#include "InputManager.h"
-#include "AudioManager.h"
 #include <string>
 #include <vector>
 
@@ -20,6 +22,16 @@ public:
 
     void shutdown();
 
+    void setAudioManager(AudioManager *audio);
+
+    void setVideoRenderer(VideoRenderer *video);
+
+    void submitVideoFrame(
+        const void *data,
+        unsigned width,
+        unsigned height,
+        size_t pitch);
+
     void setInputManager(InputManager *input);
 
     int16_t inputState(
@@ -27,8 +39,6 @@ public:
         unsigned device,
         unsigned index,
         unsigned id);
-
-    void setAudioManager(AudioManager *audio);
 
     void audioBatch(
         const int16_t *data,
@@ -72,15 +82,9 @@ private:
 
     std::vector<unsigned char> romData;
 
-    InputManager *inputManager = nullptr;
+    VideoRenderer *videoRenderer = nullptr;
 
     AudioManager *audioManager = nullptr;
+
+    InputManager *inputManager = nullptr;
 };
-
-extern const void *g_frameBuffer;
-
-extern unsigned g_frameWidth;
-
-extern unsigned g_frameHeight;
-
-extern size_t g_framePitch;

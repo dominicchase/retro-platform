@@ -56,11 +56,7 @@ bool VideoRenderer::init()
     return true;
 }
 
-void VideoRenderer::render(
-    const void *frameBuffer,
-    unsigned width,
-    unsigned height,
-    size_t pitch)
+void VideoRenderer::render()
 {
     if (!frameBuffer)
     {
@@ -71,7 +67,7 @@ void VideoRenderer::render(
         texture,
         nullptr,
         frameBuffer,
-        static_cast<int>(pitch));
+        static_cast<int>(framePitch));
 
     SDL_RenderClear(renderer);
 
@@ -123,4 +119,16 @@ bool VideoRenderer::processEvents()
 void VideoRenderer::delay()
 {
     SDL_Delay(16);
+}
+
+void VideoRenderer::setFrame(
+    const void *buffer,
+    unsigned width,
+    unsigned height,
+    size_t pitch)
+{
+    frameBuffer = buffer;
+    frameWidth = width;
+    frameHeight = height;
+    framePitch = pitch;
 }

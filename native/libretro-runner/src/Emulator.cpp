@@ -57,6 +57,8 @@ bool Emulator::init(
 
     core.setAudioManager(&audio);
 
+    core.setVideoRenderer(&video);
+
     core.setInputManager(&input);
 
     core.init();
@@ -89,11 +91,7 @@ void Emulator::run()
 
         core.runFrame();
 
-        video.render(
-            g_frameBuffer,
-            g_frameWidth,
-            g_frameHeight,
-            g_framePitch);
+        video.render();
 
         limiter.wait();
     }

@@ -1,16 +1,11 @@
-#include "LibretroCore.h"
-#include "InputManager.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 
-const void *g_frameBuffer = nullptr;
-
-unsigned g_frameWidth = 0;
-
-unsigned g_frameHeight = 0;
-
-size_t g_framePitch = 0;
+#include "LibretroCore.h"
+#include "AudioManager.h"
+#include "VideoRenderer.h"
+#include "InputManager.h"
 
 LibretroCore *g_core = nullptr;
 
@@ -37,13 +32,32 @@ void video_callback(
     unsigned height,
     size_t pitch)
 {
-    g_frameBuffer = data;
+    if (g_core)
+    {
+        g_core->submitVideoFrame(
+            data,
+            width,
+            height,
+            pitch);
+    }
+}
 
-    g_frameWidth = width;
+void LibretroCore::submitVideoFrame(
+    const void *data,
+    unsigned width,
+    unsigned height,
+    size_t pitch)
+{
+    if (!videoRenderer)
+    {
+        return;
+    }
 
-    g_frameHeight = height;
-
-    g_framePitch = pitch;
+    videoRenderer->setFrame(
+        data,
+        width,
+        height,
+        pitch);
 }
 
 void audio_sample_callback(
@@ -286,4 +300,10 @@ void LibretroCore::shutdown()
     {
         retro_deinit();
     }
+}
+
+void LibretroCore::setVideoRenderer(
+    VideoRenderer *video)
+{
+    videoRenderer = video;
 }

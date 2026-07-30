@@ -7,8 +7,10 @@ class VideoRenderer
 public:
     bool init();
 
-    void render(
-        const void *frameBuffer,
+    void render();
+
+    void setFrame(
+        const void *buffer,
         unsigned width,
         unsigned height,
         size_t pitch);
@@ -25,4 +27,12 @@ private:
     SDL_Renderer *renderer = nullptr;
 
     SDL_Texture *texture = nullptr;
+
+    const void *frameBuffer = nullptr;
+
+    unsigned frameWidth = 0;
+
+    unsigned frameHeight = 0;
+
+    size_t framePitch = 0;
 };
