@@ -3,15 +3,6 @@
 
 bool VideoRenderer::init()
 {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        std::cout << "SDL init failed: "
-                  << SDL_GetError()
-                  << std::endl;
-
-        return false;
-    }
-
     window =
         SDL_CreateWindow(
             "Retro Platform",
@@ -112,8 +103,6 @@ void VideoRenderer::shutdown()
         SDL_DestroyWindow(window);
         window = nullptr;
     }
-
-    SDL_Quit();
 }
 
 bool VideoRenderer::processEvents()

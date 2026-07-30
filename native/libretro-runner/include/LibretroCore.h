@@ -3,6 +3,7 @@
 #include "libretro.h"
 #include "CoreLoader.h"
 #include "InputManager.h"
+#include "AudioManager.h"
 #include <string>
 #include <vector>
 
@@ -22,10 +23,16 @@ public:
     void setInputManager(InputManager *input);
 
     int16_t inputState(
-    unsigned port,
-    unsigned device,
-    unsigned index,
-    unsigned id);
+        unsigned port,
+        unsigned device,
+        unsigned index,
+        unsigned id);
+
+    void setAudioManager(AudioManager *audio);
+
+    void audioBatch(
+        const int16_t *data,
+        size_t frames);
 
 private:
     void (*retro_init)() = nullptr;
@@ -62,6 +69,8 @@ private:
     std::vector<unsigned char> romData;
 
     InputManager *inputManager = nullptr;
+
+    AudioManager *audioManager = nullptr;
 };
 
 extern const void *g_frameBuffer;

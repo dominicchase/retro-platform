@@ -5,6 +5,8 @@
 #include "CoreLoader.h"
 #include "LibretroCore.h"
 #include "VideoRenderer.h"
+#include "AudioManager.h"
+#include "InputManager.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +23,16 @@ int main(int argc, char *argv[])
     {
         std::cout
             << "Usage: libretro-runner <core.dll> <rom>\n";
+        return 1;
+    }
+
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) != 0)
+    {
+        std::cout
+            << "SDL init failed: "
+            << SDL_GetError()
+            << std::endl;
+
         return 1;
     }
 
@@ -57,6 +69,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    AudioManager audio;
+
+    if (!audio.init())
+    {
+        return 1;
+    }
+
+    core.setAudioManager(&audio);
+
     InputManager input;
 
     core.setInputManager(&input);
@@ -81,4 +102,9 @@ int main(int argc, char *argv[])
     }
 
     video.shutdown();
+    audio.shutdown();
+
+    SDL_Quit();
+
+    return 0;
 }

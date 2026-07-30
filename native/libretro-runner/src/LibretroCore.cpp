@@ -57,7 +57,15 @@ size_t audio_batch_callback(
     const int16_t *data,
     size_t frames)
 {
-    // TODO: handle audio later
+    if (!g_core)
+    {
+        return frames;
+    }
+
+    g_core->audioBatch(
+        data,
+        frames);
+
     return frames;
 }
 
@@ -237,4 +245,23 @@ int16_t LibretroCore::inputState(
     }
 
     return inputManager->getButtonState(id);
+}
+
+void LibretroCore::setAudioManager(AudioManager *audio)
+{
+    audioManager = audio;
+}
+
+void LibretroCore::audioBatch(
+    const int16_t *data,
+    size_t frames)
+{
+    if (!audioManager)
+    {
+        return;
+    }
+
+    audioManager->playSamples(
+        data,
+        frames);
 }

@@ -14,6 +14,7 @@ add_executable(libretro-runner
     src/LibretroCore.cpp
     src/VideoRenderer.cpp
     src/InputManager.cpp
+    src/AudioManager.cpp
 )
 
 target_include_directories(libretro-runner PRIVATE
