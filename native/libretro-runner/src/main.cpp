@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include "CoreLoader.h"
 #include "LibretroCore.h"
+#include "VideoRenderer.h"
 
 int main(int argc, char *argv[])
 {
@@ -49,109 +50,29 @@ int main(int argc, char *argv[])
 
     std::cout << "ROM loaded!\n";
 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        std::cout << "SDL init failed: "
-                  << SDL_GetError()
-                  << std::endl;
+    VideoRenderer video;
 
+    if (!video.init())
+    {
         return 1;
     }
-
-    SDL_Window *window =
-        SDL_CreateWindow(
-            "Retro Platform",
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
-            512,
-            448,
-            0);
-
-    if (!window)
-    {
-        std::cout << "SDL window failed: "
-                  << SDL_GetError()
-                  << std::endl;
-
-        return 1;
-    }
-
-    SDL_Renderer *renderer =
-        SDL_CreateRenderer(
-            window,
-            -1,
-            SDL_RENDERER_ACCELERATED);
-
-    if (!renderer)
-    {
-        std::cout << "SDL renderer failed: "
-                  << SDL_GetError()
-                  << std::endl;
-
-        return 1;
-    }
-
-    SDL_Texture *texture =
-        SDL_CreateTexture(
-            renderer,
-            SDL_PIXELFORMAT_RGB565,
-            SDL_TEXTUREACCESS_STREAMING,
-            256,
-            224);
-
-    if (!texture)
-    {
-        std::cout << "SDL texture failed: "
-                  << SDL_GetError()
-                  << std::endl;
-
-        return 1;
-    }
-
-    std::cout << "SDL window created\n";
 
     bool running = true;
 
-    SDL_Event event;
-
     while (running)
     {
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
-                running = false;
-            }
-        }
+        running = video.processEvents();
 
         core.runFrame();
 
-        if (g_frameBuffer)
-        {
-            SDL_UpdateTexture(
-                texture,
-                nullptr,
-                g_frameBuffer,
-                static_cast<int>(g_framePitch));
-
-            SDL_RenderClear(renderer);
-
-            SDL_RenderCopy(
-                renderer,
-                texture,
-                nullptr,
-                nullptr);
-
-            SDL_RenderPresent(renderer);
-        }
+        video.render(
+            g_frameBuffer,
+            g_frameWidth,
+            g_frameHeight,
+            g_framePitch);
 
         SDL_Delay(16);
     }
 
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
-    return 0;
+    video.shutdown();
 }
