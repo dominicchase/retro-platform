@@ -57,11 +57,17 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    InputManager input;
+
+    core.setInputManager(&input);
+
     bool running = true;
 
     while (running)
     {
         running = video.processEvents();
+
+        input.update();
 
         core.runFrame();
 
