@@ -19,9 +19,7 @@ void FrameLimiter::wait()
             std::chrono::duration<double, std::milli>(
                 frameDuration));
 
-
     nextFrame += frameTime;
-
 
     // We fell too far behind.
     // Reset instead of trying to catch up.
@@ -29,7 +27,6 @@ void FrameLimiter::wait()
     {
         nextFrame = now;
     }
-
 
     if (nextFrame > now)
     {
