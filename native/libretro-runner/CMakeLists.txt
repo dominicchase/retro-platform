@@ -10,6 +10,7 @@ find_package(SDL2 CONFIG REQUIRED)
 
 add_executable(libretro-runner
     src/main.cpp
+    src/Emulator.cpp
     src/CoreLoader.cpp
     src/LibretroCore.cpp
     src/VideoRenderer.cpp

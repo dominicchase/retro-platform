@@ -98,6 +98,10 @@ bool LibretroCore::load(CoreLoader &loader)
         reinterpret_cast<void (*)()>(
             loader.getFunction("retro_init"));
 
+    retro_deinit =
+        reinterpret_cast<void (*)()>(
+            loader.getFunction("retro_deinit"));
+
     retro_set_environment =
         reinterpret_cast<void (*)(retro_environment_t)>(
             loader.getFunction("retro_set_environment"));
@@ -139,6 +143,7 @@ bool LibretroCore::load(CoreLoader &loader)
             loader.getFunction("retro_get_system_av_info"));
 
     if (!retro_init ||
+        !retro_deinit ||
         !retro_set_environment ||
         !retro_set_video_refresh ||
         !retro_set_audio_sample ||
@@ -273,4 +278,12 @@ double LibretroCore::getFPS()
     retro_get_system_av_info(&info);
 
     return info.timing.fps;
+}
+
+void LibretroCore::shutdown()
+{
+    if (retro_deinit)
+    {
+        retro_deinit();
+    }
 }

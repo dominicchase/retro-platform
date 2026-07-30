@@ -39,6 +39,8 @@ public:
 private:
     void (*retro_init)() = nullptr;
 
+    void (*retro_deinit)() = nullptr;
+
     void (*retro_set_environment)(
         retro_environment_t) = nullptr;
 
