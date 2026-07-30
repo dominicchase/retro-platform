@@ -13,6 +13,7 @@ add_executable(libretro-runner
     src/CoreLoader.cpp
     src/LibretroCore.cpp
     src/VideoRenderer.cpp
+    src/InputManager.cpp
 )
 
 target_include_directories(libretro-runner PRIVATE

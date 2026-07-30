@@ -2,6 +2,7 @@
 
 #include "libretro.h"
 #include "CoreLoader.h"
+#include "InputManager.h"
 #include <string>
 #include <vector>
 
@@ -17,6 +18,14 @@ public:
     void runFrame();
 
     void shutdown();
+
+    void setInputManager(InputManager *input);
+
+    int16_t inputState(
+    unsigned port,
+    unsigned device,
+    unsigned index,
+    unsigned id);
 
 private:
     void (*retro_init)() = nullptr;
@@ -51,6 +60,8 @@ private:
         retro_system_av_info *) = nullptr;
 
     std::vector<unsigned char> romData;
+
+    InputManager *inputManager = nullptr;
 };
 
 extern const void *g_frameBuffer;

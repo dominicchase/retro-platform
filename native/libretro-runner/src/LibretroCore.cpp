@@ -1,4 +1,5 @@
 #include "LibretroCore.h"
+#include "InputManager.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -10,6 +11,8 @@ unsigned g_frameWidth = 0;
 unsigned g_frameHeight = 0;
 
 size_t g_framePitch = 0;
+
+LibretroCore *g_core = nullptr;
 
 bool environment_callback(unsigned cmd, void *data)
 {
@@ -69,8 +72,16 @@ int16_t input_state_callback(
     unsigned index,
     unsigned id)
 {
-    // TODO: controller state later
-    return 0;
+    if (!g_core)
+    {
+        return 0;
+    }
+
+    return g_core->inputState(
+        port,
+        device,
+        index,
+        id);
 }
 
 bool LibretroCore::load(CoreLoader &loader)
@@ -140,6 +151,8 @@ bool LibretroCore::load(CoreLoader &loader)
 
 void LibretroCore::init()
 {
+    g_core = this;
+
     retro_set_environment(environment_callback);
 
     retro_set_video_refresh(video_callback);
@@ -205,4 +218,23 @@ bool LibretroCore::loadGame(const std::string &path)
 void LibretroCore::runFrame()
 {
     retro_run();
+}
+
+void LibretroCore::setInputManager(InputManager *input)
+{
+    inputManager = input;
+}
+
+int16_t LibretroCore::inputState(
+    unsigned port,
+    unsigned device,
+    unsigned index,
+    unsigned id)
+{
+    if (!inputManager)
+    {
+        return 0;
+    }
+
+    return inputManager->getButtonState(id);
 }
