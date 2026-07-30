@@ -13,9 +13,11 @@ public:
         unsigned height,
         size_t pitch);
 
-    void shutdown();
-
     bool processEvents();
+
+    void delay();
+
+    void shutdown();
 
 private:
     SDL_Window *window = nullptr;

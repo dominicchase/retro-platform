@@ -130,3 +130,8 @@ bool VideoRenderer::processEvents()
 
     return true;
 }
+
+void VideoRenderer::delay()
+{
+    SDL_Delay(16);
+}

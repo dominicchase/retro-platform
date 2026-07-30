@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
             g_frameHeight,
             g_framePitch);
 
-        SDL_Delay(16);
+        video.delay();
     }
 
     video.shutdown();
