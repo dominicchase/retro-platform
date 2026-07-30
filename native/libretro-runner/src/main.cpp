@@ -7,6 +7,7 @@
 #include "VideoRenderer.h"
 #include "AudioManager.h"
 #include "InputManager.h"
+#include "FrameLimiter.h"
 
 int main(int argc, char *argv[])
 {
@@ -62,6 +63,11 @@ int main(int argc, char *argv[])
 
     std::cout << "ROM loaded!\n";
 
+    FrameLimiter limiter;
+
+    limiter.setFPS(
+        core.getFPS());
+
     VideoRenderer video;
 
     if (!video.init())
@@ -98,7 +104,7 @@ int main(int argc, char *argv[])
             g_frameHeight,
             g_framePitch);
 
-        video.delay();
+      limiter.wait();
     }
 
     video.shutdown();

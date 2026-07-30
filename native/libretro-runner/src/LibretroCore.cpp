@@ -265,3 +265,12 @@ void LibretroCore::audioBatch(
         data,
         frames);
 }
+
+double LibretroCore::getFPS()
+{
+    retro_system_av_info info{};
+
+    retro_get_system_av_info(&info);
+
+    return info.timing.fps;
+}

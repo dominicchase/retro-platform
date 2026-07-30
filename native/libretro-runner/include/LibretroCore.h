@@ -34,6 +34,8 @@ public:
         const int16_t *data,
         size_t frames);
 
+    double getFPS();
+
 private:
     void (*retro_init)() = nullptr;
 
