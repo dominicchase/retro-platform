@@ -52,3 +52,11 @@ private:
 
     std::vector<unsigned char> romData;
 };
+
+extern const void *g_frameBuffer;
+
+extern unsigned g_frameWidth;
+
+extern unsigned g_frameHeight;
+
+extern size_t g_framePitch;

@@ -3,6 +3,14 @@
 #include <fstream>
 #include <vector>
 
+const void *g_frameBuffer = nullptr;
+
+unsigned g_frameWidth = 0;
+
+unsigned g_frameHeight = 0;
+
+size_t g_framePitch = 0;
+
 bool environment_callback(unsigned cmd, void *data)
 {
     switch (cmd)
@@ -26,18 +34,13 @@ void video_callback(
     unsigned height,
     size_t pitch)
 {
-    static int frameCount = 0;
+    g_frameBuffer = data;
 
-    frameCount++;
+    g_frameWidth = width;
 
-    if (frameCount == 1)
-    {
-        std::cout << "First video frame: "
-                  << width
-                  << "x"
-                  << height
-                  << std::endl;
-    }
+    g_frameHeight = height;
+
+    g_framePitch = pitch;
 }
 
 void audio_sample_callback(

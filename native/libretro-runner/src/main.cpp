@@ -76,14 +76,39 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    std::cout << "SDL window created\n";
+    SDL_Renderer *renderer =
+        SDL_CreateRenderer(
+            window,
+            -1,
+            SDL_RENDERER_ACCELERATED);
 
-    for (int i = 0; i < 60; i++)
+    if (!renderer)
     {
-        core.runFrame();
+        std::cout << "SDL renderer failed: "
+                  << SDL_GetError()
+                  << std::endl;
+
+        return 1;
     }
 
-    std::cout << "Finished running 60 frames.\n";
+    SDL_Texture *texture =
+        SDL_CreateTexture(
+            renderer,
+            SDL_PIXELFORMAT_RGB565,
+            SDL_TEXTUREACCESS_STREAMING,
+            256,
+            224);
+
+    if (!texture)
+    {
+        std::cout << "SDL texture failed: "
+                  << SDL_GetError()
+                  << std::endl;
+
+        return 1;
+    }
+
+    std::cout << "SDL window created\n";
 
     bool running = true;
 
@@ -101,9 +126,30 @@ int main(int argc, char *argv[])
 
         core.runFrame();
 
+        if (g_frameBuffer)
+        {
+            SDL_UpdateTexture(
+                texture,
+                nullptr,
+                g_frameBuffer,
+                static_cast<int>(g_framePitch));
+
+            SDL_RenderClear(renderer);
+
+            SDL_RenderCopy(
+                renderer,
+                texture,
+                nullptr,
+                nullptr);
+
+            SDL_RenderPresent(renderer);
+        }
+
         SDL_Delay(16);
     }
 
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
