@@ -37,87 +37,87 @@ void InputManager::update()
     const Uint8 *keyboard =
         SDL_GetKeyboardState(nullptr);
 
-   buttons[RETRO_DEVICE_ID_JOYPAD_UP] =
-    keyboard[SDL_SCANCODE_UP] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_DPAD_UP));
+    buttons[RETRO_DEVICE_ID_JOYPAD_UP] =
+        keyboard[SDL_SCANCODE_UP] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_DPAD_UP));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_DOWN] =
-    keyboard[SDL_SCANCODE_DOWN] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_DPAD_DOWN));
+    buttons[RETRO_DEVICE_ID_JOYPAD_DOWN] =
+        keyboard[SDL_SCANCODE_DOWN] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_DPAD_DOWN));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_LEFT] =
-    keyboard[SDL_SCANCODE_LEFT] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_DPAD_LEFT));
+    buttons[RETRO_DEVICE_ID_JOYPAD_LEFT] =
+        keyboard[SDL_SCANCODE_LEFT] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_DPAD_LEFT));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_RIGHT] =
-    keyboard[SDL_SCANCODE_RIGHT] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_DPAD_RIGHT));
+    buttons[RETRO_DEVICE_ID_JOYPAD_RIGHT] =
+        keyboard[SDL_SCANCODE_RIGHT] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_DPAD_RIGHT));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_B] =
-    keyboard[SDL_SCANCODE_Z] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_A));
+    buttons[RETRO_DEVICE_ID_JOYPAD_B] =
+        keyboard[SDL_SCANCODE_Z] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_A));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_A] =
-    keyboard[SDL_SCANCODE_X] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_B));
+    buttons[RETRO_DEVICE_ID_JOYPAD_A] =
+        keyboard[SDL_SCANCODE_X] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_B));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_Y] =
-    keyboard[SDL_SCANCODE_A] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_X));
+    buttons[RETRO_DEVICE_ID_JOYPAD_Y] =
+        keyboard[SDL_SCANCODE_A] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_X));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_X] =
-    keyboard[SDL_SCANCODE_S] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_Y));
+    buttons[RETRO_DEVICE_ID_JOYPAD_X] =
+        keyboard[SDL_SCANCODE_S] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_Y));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_START] =
-    keyboard[SDL_SCANCODE_RETURN] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_START));
+    buttons[RETRO_DEVICE_ID_JOYPAD_START] =
+        keyboard[SDL_SCANCODE_RETURN] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_START));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_SELECT] =
-    keyboard[SDL_SCANCODE_RSHIFT] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_BACK));
+    buttons[RETRO_DEVICE_ID_JOYPAD_SELECT] =
+        keyboard[SDL_SCANCODE_RSHIFT] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_BACK));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_L] =
-    keyboard[SDL_SCANCODE_Q] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_LEFTSHOULDER));
+    buttons[RETRO_DEVICE_ID_JOYPAD_L] =
+        keyboard[SDL_SCANCODE_Q] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_LEFTSHOULDER));
 
-buttons[RETRO_DEVICE_ID_JOYPAD_R] =
-    keyboard[SDL_SCANCODE_W] ||
-    (controller &&
-     SDL_GameControllerGetButton(
-         controller,
-         SDL_CONTROLLER_BUTTON_RIGHTSHOULDER));
+    buttons[RETRO_DEVICE_ID_JOYPAD_R] =
+        keyboard[SDL_SCANCODE_W] ||
+        (controller &&
+         SDL_GameControllerGetButton(
+             controller,
+             SDL_CONTROLLER_BUTTON_RIGHTSHOULDER));
 }

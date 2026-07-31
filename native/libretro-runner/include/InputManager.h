@@ -12,5 +12,5 @@ public:
 private:
     bool buttons[16] = {};
 
-    SDL_GameController* controller = nullptr;
+    SDL_GameController *controller = nullptr;
 };
