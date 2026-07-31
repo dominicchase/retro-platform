@@ -18,6 +18,11 @@ public:
 
     void shutdown();
 
+public:
+    void saveTestState();
+
+    void loadTestState();
+
 private:
     CoreLoader loader;
 

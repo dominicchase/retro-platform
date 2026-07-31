@@ -37,6 +37,9 @@ void InputManager::update()
     const Uint8 *keyboard =
         SDL_GetKeyboardState(nullptr);
 
+    save = keyboard[SDL_SCANCODE_F];
+    load = keyboard[SDL_SCANCODE_G];
+
     buttons[RETRO_DEVICE_ID_JOYPAD_UP] =
         keyboard[SDL_SCANCODE_UP] ||
         (controller &&
@@ -120,4 +123,14 @@ void InputManager::update()
          SDL_GameControllerGetButton(
              controller,
              SDL_CONTROLLER_BUTTON_RIGHTSHOULDER));
+}
+
+bool InputManager::savePressed()
+{
+    return save;
+}
+
+bool InputManager::loadPressed()
+{
+    return load;
 }

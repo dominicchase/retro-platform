@@ -46,6 +46,14 @@ public:
 
     double getFPS();
 
+    size_t getSaveSize();
+
+    bool saveState(
+        std::vector<uint8_t> &buffer);
+
+    bool loadState(
+        const std::vector<uint8_t> &buffer);
+
 private:
     void (*retro_init)() = nullptr;
 
@@ -87,4 +95,14 @@ private:
     AudioManager *audioManager = nullptr;
 
     InputManager *inputManager = nullptr;
+
+    size_t (*retro_serialize_size)() = nullptr;
+
+    bool (*retro_serialize)(
+        void *,
+        size_t) = nullptr;
+
+    bool (*retro_unserialize)(
+        const void *,
+        size_t) = nullptr;
 };

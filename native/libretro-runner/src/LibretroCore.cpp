@@ -173,6 +173,25 @@ bool LibretroCore::load(CoreLoader &loader)
         return false;
     }
 
+    retro_serialize_size =
+        reinterpret_cast<size_t (*)()>(
+            loader.getFunction("retro_serialize_size"));
+
+    retro_serialize =
+        reinterpret_cast<bool (*)(void *, size_t)>(
+            loader.getFunction("retro_serialize"));
+
+    retro_unserialize =
+        reinterpret_cast<bool (*)(const void *, size_t)>(
+            loader.getFunction("retro_unserialize"));
+
+    if (!retro_serialize_size ||
+        !retro_serialize ||
+        !retro_unserialize)
+    {
+        std::cout << "Save state functions unavailable\n";
+    }
+
     return true;
 }
 
@@ -305,4 +324,47 @@ void LibretroCore::shutdown()
 void LibretroCore::setVideoRenderer(VideoRenderer *video)
 {
     videoRenderer = video;
+}
+
+size_t LibretroCore::getSaveSize()
+{
+    if (!retro_serialize_size)
+    {
+        return 0;
+    }
+
+    return retro_serialize_size();
+}
+
+bool LibretroCore::saveState(std::vector<uint8_t> &buffer)
+{
+    if (!retro_serialize)
+    {
+        return false;
+    }
+
+    size_t size = getSaveSize();
+
+    if (size == 0)
+    {
+        return false;
+    }
+
+    buffer.resize(size);
+
+    return retro_serialize(
+        buffer.data(),
+        size);
+}
+
+bool LibretroCore::loadState(const std::vector<uint8_t> &buffer)
+{
+    if (!retro_unserialize)
+    {
+        return false;
+    }
+
+    return retro_unserialize(
+        buffer.data(),
+        buffer.size());
 }

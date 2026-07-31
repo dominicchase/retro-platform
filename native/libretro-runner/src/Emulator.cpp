@@ -1,6 +1,9 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <vector>
 #include "Emulator.h"
+
+std::vector<uint8_t> testSave;
 
 bool Emulator::init(
     const char *corePath,
@@ -89,6 +92,16 @@ void Emulator::run()
 
         input.update();
 
+        if (input.savePressed())
+        {
+            saveTestState();
+        }
+
+        if (input.loadPressed())
+        {
+            loadTestState();
+        }
+
         core.runFrame();
 
         video.render();
@@ -106,4 +119,28 @@ void Emulator::shutdown()
     core.shutdown();
 
     SDL_Quit();
+}
+
+void Emulator::saveTestState()
+{
+    if (core.saveState(testSave))
+    {
+        std::cout << "State saved!\n";
+    }
+    else
+    {
+        std::cout << "Save failed\n";
+    }
+}
+
+void Emulator::loadTestState()
+{
+    if (core.loadState(testSave))
+    {
+        std::cout << "State loaded!\n";
+    }
+    else
+    {
+        std::cout << "Load failed\n";
+    }
 }
