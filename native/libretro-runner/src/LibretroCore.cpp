@@ -302,8 +302,7 @@ void LibretroCore::shutdown()
     }
 }
 
-void LibretroCore::setVideoRenderer(
-    VideoRenderer *video)
+void LibretroCore::setVideoRenderer(VideoRenderer *video)
 {
     videoRenderer = video;
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL2/SDL.h>
+
 class InputManager
 {
 public:
@@ -9,4 +11,6 @@ public:
 
 private:
     bool buttons[16] = {};
+
+    SDL_GameController* controller = nullptr;
 };
