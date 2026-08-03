@@ -6,6 +6,7 @@
 #include "AudioManager.h"
 #include "InputManager.h"
 #include "FrameLimiter.h"
+#include "SaveManager.h"
 
 class Emulator
 {

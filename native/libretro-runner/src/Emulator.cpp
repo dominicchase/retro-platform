@@ -3,7 +3,7 @@
 #include <vector>
 #include "Emulator.h"
 
-std::vector<uint8_t> testSave;
+SaveManager saveManager;
 
 bool Emulator::init(
     const char *corePath,
@@ -18,6 +18,14 @@ bool Emulator::init(
             << "SDL init failed: "
             << SDL_GetError()
             << std::endl;
+
+        return false;
+    }
+
+    if (!saveManager.init())
+    {
+        std::cout
+            << "Save manager initialization failed\n";
 
         return false;
     }
@@ -123,19 +131,39 @@ void Emulator::shutdown()
 
 void Emulator::saveTestState()
 {
-    if (core.saveState(testSave))
+    std::vector<uint8_t> buffer;
+
+    if (!core.saveState(buffer))
+    {
+        std::cout << "Save failed\n";
+        return;
+    }
+
+    if (saveManager.saveState(
+            "ChronoTrigger.slot0",
+            buffer))
     {
         std::cout << "State saved!\n";
     }
     else
     {
-        std::cout << "Save failed\n";
+        std::cout << "Failed writing save file\n";
     }
 }
 
 void Emulator::loadTestState()
 {
-    if (core.loadState(testSave))
+    std::vector<uint8_t> buffer;
+
+    if (!saveManager.loadState(
+            "ChronoTrigger.slot0",
+            buffer))
+    {
+        std::cout << "Failed reading save file\n";
+        return;
+    }
+
+    if (core.loadState(buffer))
     {
         std::cout << "State loaded!\n";
     }
