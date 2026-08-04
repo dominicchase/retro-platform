@@ -40,6 +40,8 @@ private:
 
     FrameLimiter limiter;
 
+    SaveManager saveManager;
+
     bool running = false;
 
     std::string currentGameName;

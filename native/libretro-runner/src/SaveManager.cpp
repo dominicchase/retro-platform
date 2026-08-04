@@ -13,7 +13,7 @@ bool SaveManager::init()
     try
     {
         std::filesystem::create_directories(
-            saveDirectory);
+            saveRoot);
     }
     catch (const std::exception &e)
     {
@@ -29,11 +29,18 @@ bool SaveManager::init()
 }
 
 bool SaveManager::saveState(
+    const std::string &gameName,
     const std::string &filename,
     const std::vector<uint8_t> &buffer)
 {
+    std::string directory =
+        getGameDirectory(gameName);
+
+    std::filesystem::create_directories(
+        directory);
+
     std::ofstream file(
-        saveDirectory + filename,
+        directory + filename,
         std::ios::binary);
 
     if (!file)
@@ -49,11 +56,12 @@ bool SaveManager::saveState(
 }
 
 bool SaveManager::loadState(
+    const std::string &gameName,
     const std::string &filename,
     std::vector<uint8_t> &buffer)
 {
     std::ifstream file(
-        saveDirectory + filename,
+        getGameDirectory(gameName) + filename,
         std::ios::binary | std::ios::ate);
 
     if (!file)
@@ -87,7 +95,7 @@ std::vector<SaveSlot> SaveManager::getSlots(
             std::to_string(i);
 
         std::filesystem::path path =
-            saveDirectory + filename;
+            getGameDirectory(gameName) + filename;
 
         SaveSlot slot;
 
@@ -135,4 +143,10 @@ std::string SaveManager::getSaveTime(
                "%Y-%m-%d %H:%M:%S");
 
     return stream.str();
+}
+
+std::string SaveManager::getGameDirectory(
+    const std::string &gameName) const
+{
+    return saveRoot + gameName + "/";
 }

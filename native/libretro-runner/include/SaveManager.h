@@ -19,10 +19,12 @@ public:
     bool init();
 
     bool saveState(
+        const std::string &gameName,
         const std::string &filename,
         const std::vector<uint8_t> &buffer);
 
     bool loadState(
+        const std::string &gameName,
         const std::string &filename,
         std::vector<uint8_t> &buffer);
 
@@ -33,5 +35,8 @@ public:
         const SaveSlot &slot);
 
 private:
-    std::string saveDirectory = "saves/states/";
+    std::string saveRoot = "saves/";
+
+    std::string getGameDirectory(
+        const std::string &gameName) const;
 };

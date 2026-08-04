@@ -4,8 +4,6 @@
 #include <vector>
 #include "Emulator.h"
 
-SaveManager saveManager;
-
 bool Emulator::init(
     const char *corePath,
     const char *romPath)
@@ -171,6 +169,7 @@ void Emulator::saveTestState()
     }
 
     if (saveManager.saveState(
+            currentGameName,
             getSaveFilename(currentSaveSlot),
             buffer))
     {
@@ -208,6 +207,7 @@ void Emulator::loadTestState()
     std::vector<uint8_t> buffer;
 
     if (!saveManager.loadState(
+            currentGameName,
             getSaveFilename(currentSaveSlot),
             buffer))
     {
