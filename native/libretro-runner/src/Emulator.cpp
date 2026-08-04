@@ -93,6 +93,27 @@ bool Emulator::init(
         << currentGameName
         << std::endl;
 
+    auto slots =
+        saveManager.getSlots(currentGameName);
+
+    for (auto &slot : slots)
+    {
+        std::cout
+            << "Slot "
+            << slot.slotNumber
+            << ": "
+            << (slot.exists ? "USED" : "EMPTY");
+
+        if (slot.exists)
+        {
+            std::cout
+                << " | "
+                << saveManager.getSaveTime(slot);
+        }
+
+        std::cout << "\n";
+    }
+
     limiter.setFPS(
         core.getFPS());
 
@@ -154,6 +175,27 @@ void Emulator::saveTestState()
             buffer))
     {
         std::cout << "State saved!\n";
+
+        auto slots =
+            saveManager.getSlots(currentGameName);
+
+        for (auto &slot : slots)
+        {
+            std::cout
+                << "Slot "
+                << slot.slotNumber
+                << ": "
+                << (slot.exists ? "USED" : "EMPTY");
+
+            if (slot.exists)
+            {
+                std::cout
+                    << " | "
+                    << saveManager.getSaveTime(slot);
+            }
+
+            std::cout << "\n";
+        }
     }
     else
     {

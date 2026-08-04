@@ -1,6 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <iomanip>
+#include <sstream>
+#include <chrono>
+#include <ctime>
 
 #include "SaveManager.h"
 
@@ -68,4 +72,67 @@ bool SaveManager::loadState(
         size);
 
     return true;
+}
+
+std::vector<SaveSlot> SaveManager::getSlots(
+    const std::string &gameName)
+{
+    std::vector<SaveSlot> slots;
+
+    for (int i = 0; i < 10; i++)
+    {
+        std::string filename =
+            gameName +
+            ".slot" +
+            std::to_string(i);
+
+        std::filesystem::path path =
+            saveDirectory + filename;
+
+        SaveSlot slot;
+
+        slot.slotNumber = i;
+
+        slot.exists =
+            std::filesystem::exists(path);
+
+        if (slot.exists)
+        {
+            slot.modifiedTime =
+                std::filesystem::last_write_time(path);
+        }
+
+        slot.filename = filename;
+
+        slots.push_back(slot);
+    }
+
+    return slots;
+}
+
+std::string SaveManager::getSaveTime(
+    const SaveSlot &slot)
+{
+    if (!slot.exists)
+    {
+        return "";
+    }
+
+    auto systemTime =
+        std::chrono::time_point_cast<std::chrono::system_clock::duration>(
+            slot.modifiedTime -
+            std::filesystem::file_time_type::clock::now() +
+            std::chrono::system_clock::now());
+
+    auto time =
+        std::chrono::system_clock::to_time_t(systemTime);
+
+    std::stringstream stream;
+
+    stream
+        << std::put_time(
+               std::localtime(&time),
+               "%Y-%m-%d %H:%M:%S");
+
+    return stream.str();
 }
