@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "CoreLoader.h"
 #include "LibretroCore.h"
 #include "VideoRenderer.h"
@@ -19,10 +21,11 @@ public:
 
     void shutdown();
 
-public:
     void saveTestState();
 
     void loadTestState();
+
+    std::string getSaveFilename(int slot) const;
 
 private:
     CoreLoader loader;
@@ -38,4 +41,8 @@ private:
     FrameLimiter limiter;
 
     bool running = false;
+
+    std::string currentGameName;
+
+    int currentSaveSlot = 0;
 };

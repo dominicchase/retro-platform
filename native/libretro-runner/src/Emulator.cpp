@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 #include <SDL2/SDL.h>
 #include <vector>
 #include "Emulator.h"
@@ -83,6 +84,15 @@ bool Emulator::init(
         return false;
     }
 
+    std::filesystem::path path(romPath);
+
+    currentGameName = path.stem().string();
+
+    std::cout
+        << "Game name: "
+        << currentGameName
+        << std::endl;
+
     limiter.setFPS(
         core.getFPS());
 
@@ -140,7 +150,7 @@ void Emulator::saveTestState()
     }
 
     if (saveManager.saveState(
-            "ChronoTrigger.slot0",
+            getSaveFilename(currentSaveSlot),
             buffer))
     {
         std::cout << "State saved!\n";
@@ -156,7 +166,7 @@ void Emulator::loadTestState()
     std::vector<uint8_t> buffer;
 
     if (!saveManager.loadState(
-            "ChronoTrigger.slot0",
+            getSaveFilename(currentSaveSlot),
             buffer))
     {
         std::cout << "Failed reading save file\n";
@@ -171,4 +181,11 @@ void Emulator::loadTestState()
     {
         std::cout << "Load failed\n";
     }
+}
+
+std::string Emulator::getSaveFilename(int slot) const
+{
+    return currentGameName +
+           ".slot" +
+           std::to_string(slot);
 }
