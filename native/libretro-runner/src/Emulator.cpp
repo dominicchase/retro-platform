@@ -87,6 +87,8 @@ bool Emulator::init(
         return false;
     }
 
+    state.runtimeState = RuntimeState::SaveMenu;
+
     std::filesystem::path path(romPath);
 
     state.currentGameName = path.stem().string();
@@ -136,26 +138,6 @@ void Emulator::run()
 
         input.update();
 
-        if (input.nextSlotPressed())
-        {
-            changeSaveSlot(1);
-        }
-
-        if (input.previousSlotPressed())
-        {
-            changeSaveSlot(-1);
-        }
-
-        if (input.savePressed())
-        {
-            saveTestState();
-        }
-
-        if (input.loadPressed())
-        {
-            loadTestState();
-        }
-
         switch (state.runtimeState)
         {
         case RuntimeState::Running:
@@ -166,6 +148,7 @@ void Emulator::run()
             break;
 
         case RuntimeState::SaveMenu:
+            updateSaveMenu();
             break;
         }
 
@@ -317,4 +300,27 @@ void Emulator::changeSaveSlot(int amount)
         << "Current save slot: "
         << state.currentSaveSlot
         << std::endl;
+}
+
+void Emulator::updateSaveMenu()
+{
+    if (input.nextSlotPressed())
+    {
+        changeSaveSlot(1);
+    }
+
+    if (input.previousSlotPressed())
+    {
+        changeSaveSlot(-1);
+    }
+
+    if (input.savePressed())
+    {
+        saveTestState();
+    }
+
+    if (input.loadPressed())
+    {
+        loadTestState();
+    }
 }

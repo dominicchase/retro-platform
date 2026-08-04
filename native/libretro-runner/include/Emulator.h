@@ -31,6 +31,8 @@ public:
     void changeSaveSlot(int amount);
 
 private:
+    void updateSaveMenu();
+
     CoreLoader loader;
 
     LibretroCore core;
