@@ -9,6 +9,7 @@
 #include "InputManager.h"
 #include "FrameLimiter.h"
 #include "SaveManager.h"
+#include "EmulatorState.h"
 
 class Emulator
 {
@@ -46,7 +47,5 @@ private:
 
     bool running = false;
 
-    std::string currentGameName;
-
-    int currentSaveSlot = 0;
+    EmulatorState state;
 };

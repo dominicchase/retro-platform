@@ -89,15 +89,15 @@ bool Emulator::init(
 
     std::filesystem::path path(romPath);
 
-    currentGameName = path.stem().string();
+    state.currentGameName = path.stem().string();
 
     std::cout
         << "Game name: "
-        << currentGameName
+        << state.currentGameName
         << std::endl;
 
     auto slots =
-        saveManager.getSlots(currentGameName);
+        saveManager.getSlots(state.currentGameName);
 
     for (auto &slot : slots)
     {
@@ -156,7 +156,18 @@ void Emulator::run()
             loadTestState();
         }
 
-        core.runFrame();
+        switch (state.runtimeState)
+        {
+        case RuntimeState::Running:
+            core.runFrame();
+            break;
+
+        case RuntimeState::Paused:
+            break;
+
+        case RuntimeState::SaveMenu:
+            break;
+        }
 
         video.render();
 
@@ -188,17 +199,17 @@ void Emulator::saveTestState()
     }
 
     if (saveManager.saveState(
-            currentGameName,
-            getSaveFilename(currentSaveSlot),
+            state.currentGameName,
+            getSaveFilename(state.currentSaveSlot),
             buffer))
     {
         SaveMetadata metadata;
 
         metadata.slotNumber =
-            currentSaveSlot;
+            state.currentSaveSlot;
 
         metadata.gameName =
-            currentGameName;
+            state.currentGameName;
 
         auto now =
             std::chrono::system_clock::now();
@@ -230,7 +241,7 @@ void Emulator::saveTestState()
         std::cout << "State saved!\n";
 
         auto slots =
-            saveManager.getSlots(currentGameName);
+            saveManager.getSlots(state.currentGameName);
 
         for (auto &slot : slots)
         {
@@ -263,8 +274,8 @@ void Emulator::loadTestState()
     std::vector<uint8_t> buffer;
 
     if (!saveManager.loadState(
-            currentGameName,
-            getSaveFilename(currentSaveSlot),
+            state.currentGameName,
+            getSaveFilename(state.currentSaveSlot),
             buffer))
     {
         std::cout << "Failed reading save file\n";
@@ -283,27 +294,27 @@ void Emulator::loadTestState()
 
 std::string Emulator::getSaveFilename(int slot) const
 {
-    return currentGameName +
+    return state.currentGameName +
            ".slot" +
            std::to_string(slot);
 }
 
 void Emulator::changeSaveSlot(int amount)
 {
-    currentSaveSlot += amount;
+    state.currentSaveSlot += amount;
 
-    if (currentSaveSlot < 0)
+    if (state.currentSaveSlot < 0)
     {
-        currentSaveSlot = 9;
+        state.currentSaveSlot = 9;
     }
 
-    if (currentSaveSlot > 9)
+    if (state.currentSaveSlot > 9)
     {
-        currentSaveSlot = 0;
+        state.currentSaveSlot = 0;
     }
 
     std::cout
         << "Current save slot: "
-        << currentSaveSlot
+        << state.currentSaveSlot
         << std::endl;
 }
