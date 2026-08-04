@@ -110,8 +110,10 @@ bool Emulator::init(
         if (slot.exists)
         {
             std::cout
-                << " | "
-                << saveManager.getSaveTime(slot);
+                << "\n   Saved: "
+                << slot.metadata.date
+                << " "
+                << slot.metadata.time;
         }
 
         std::cout << "\n";
@@ -229,8 +231,10 @@ void Emulator::saveTestState()
             if (slot.exists)
             {
                 std::cout
-                    << " | "
-                    << saveManager.getSaveTime(slot);
+                    << "\n   Saved: "
+                    << slot.metadata.date
+                    << " "
+                    << slot.metadata.time;
             }
 
             std::cout << "\n";

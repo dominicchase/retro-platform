@@ -106,8 +106,10 @@ std::vector<SaveSlot> SaveManager::getSlots(
 
         if (slot.exists)
         {
-            slot.modifiedTime =
-                std::filesystem::last_write_time(path);
+            slot.metadata =
+                loadMetadata(
+                    gameName,
+                    i);
         }
 
         slot.filename = filename;
@@ -116,33 +118,6 @@ std::vector<SaveSlot> SaveManager::getSlots(
     }
 
     return slots;
-}
-
-std::string SaveManager::getSaveTime(
-    const SaveSlot &slot)
-{
-    if (!slot.exists)
-    {
-        return "";
-    }
-
-    auto systemTime =
-        std::chrono::time_point_cast<std::chrono::system_clock::duration>(
-            slot.modifiedTime -
-            std::filesystem::file_time_type::clock::now() +
-            std::chrono::system_clock::now());
-
-    auto time =
-        std::chrono::system_clock::to_time_t(systemTime);
-
-    std::stringstream stream;
-
-    stream
-        << std::put_time(
-               std::localtime(&time),
-               "%Y-%m-%d %H:%M:%S");
-
-    return stream.str();
 }
 
 bool SaveManager::saveMetadata(
@@ -175,6 +150,60 @@ bool SaveManager::saveMetadata(
          << "\n";
 
     return true;
+}
+
+SaveMetadata SaveManager::loadMetadata(
+    const std::string &gameName,
+    int slot)
+{
+    SaveMetadata metadata;
+
+    metadata.slotNumber = slot;
+    metadata.gameName = gameName;
+
+    std::ifstream file(
+        getMetadataFilename(
+            gameName,
+            slot));
+
+    if (!file)
+    {
+        return metadata;
+    }
+
+    std::string line;
+
+    while (std::getline(file, line))
+    {
+        auto separator =
+            line.find('=');
+
+        if (separator == std::string::npos)
+        {
+            continue;
+        }
+
+        auto key =
+            line.substr(
+                0,
+                separator);
+
+        auto value =
+            line.substr(
+                separator + 1);
+
+        if (key == "date")
+        {
+            metadata.date = value;
+        }
+
+        if (key == "time")
+        {
+            metadata.time = value;
+        }
+    }
+
+    return metadata;
 }
 
 std::string SaveManager::getGameDirectory(

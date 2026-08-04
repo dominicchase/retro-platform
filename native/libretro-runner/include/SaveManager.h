@@ -18,7 +18,6 @@ struct SaveSlot
     int slotNumber;
     bool exists;
     std::string filename;
-    std::filesystem::file_time_type modifiedTime;
     SaveMetadata metadata;
 };
 
