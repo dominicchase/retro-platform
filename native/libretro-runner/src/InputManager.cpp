@@ -37,8 +37,17 @@ void InputManager::update()
     const Uint8 *keyboard =
         SDL_GetKeyboardState(nullptr);
 
-    save = keyboard[SDL_SCANCODE_F];
-    load = keyboard[SDL_SCANCODE_G];
+    saveButton.current =
+        keyboard[SDL_SCANCODE_F];
+
+    loadButton.current =
+        keyboard[SDL_SCANCODE_G];
+
+    nextSlotButton.current =
+        keyboard[SDL_SCANCODE_N];
+
+    previousSlotButton.current =
+        keyboard[SDL_SCANCODE_P];
 
     buttons[RETRO_DEVICE_ID_JOYPAD_UP] =
         keyboard[SDL_SCANCODE_UP] ||
@@ -127,10 +136,35 @@ void InputManager::update()
 
 bool InputManager::savePressed()
 {
-    return save;
+    return saveButton.pressed();
 }
 
 bool InputManager::loadPressed()
 {
-    return load;
+    return loadButton.pressed();
+}
+
+bool InputManager::nextSlotPressed()
+{
+    return nextSlotButton.pressed();
+}
+
+bool InputManager::previousSlotPressed()
+{
+    return previousSlotButton.pressed();
+}
+
+void InputManager::endFrame()
+{
+    saveButton.previous =
+        saveButton.current;
+
+    loadButton.previous =
+        loadButton.current;
+
+    nextSlotButton.previous =
+        nextSlotButton.current;
+
+    previousSlotButton.previous =
+        previousSlotButton.current;
 }

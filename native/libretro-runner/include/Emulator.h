@@ -27,6 +27,8 @@ public:
 
     std::string getSaveFilename(int slot) const;
 
+    void changeSaveSlot(int amount);
+
 private:
     CoreLoader loader;
 

@@ -136,6 +136,16 @@ void Emulator::run()
 
         input.update();
 
+        if (input.nextSlotPressed())
+        {
+            changeSaveSlot(1);
+        }
+
+        if (input.previousSlotPressed())
+        {
+            changeSaveSlot(-1);
+        }
+
         if (input.savePressed())
         {
             saveTestState();
@@ -151,6 +161,8 @@ void Emulator::run()
         video.render();
 
         limiter.wait();
+
+        input.endFrame();
     }
 }
 
@@ -274,4 +286,24 @@ std::string Emulator::getSaveFilename(int slot) const
     return currentGameName +
            ".slot" +
            std::to_string(slot);
+}
+
+void Emulator::changeSaveSlot(int amount)
+{
+    currentSaveSlot += amount;
+
+    if (currentSaveSlot < 0)
+    {
+        currentSaveSlot = 9;
+    }
+
+    if (currentSaveSlot > 9)
+    {
+        currentSaveSlot = 0;
+    }
+
+    std::cout
+        << "Current save slot: "
+        << currentSaveSlot
+        << std::endl;
 }
