@@ -30,6 +30,10 @@ public:
 
     void endFrame();
 
+    bool pausePressed();
+
+    bool menuPressed();
+
 private:
     bool buttons[16] = {};
 
@@ -42,4 +46,8 @@ private:
     ButtonState nextSlotButton;
 
     ButtonState previousSlotButton;
+
+    ButtonState pauseButton;
+
+    ButtonState menuButton;
 };

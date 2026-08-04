@@ -132,6 +132,12 @@ void InputManager::update()
          SDL_GameControllerGetButton(
              controller,
              SDL_CONTROLLER_BUTTON_RIGHTSHOULDER));
+
+    pauseButton.current =
+        keyboard[SDL_SCANCODE_ESCAPE];
+
+    menuButton.current =
+        keyboard[SDL_SCANCODE_M];
 }
 
 bool InputManager::savePressed()
@@ -154,6 +160,16 @@ bool InputManager::previousSlotPressed()
     return previousSlotButton.pressed();
 }
 
+bool InputManager::pausePressed()
+{
+    return pauseButton.pressed();
+}
+
+bool InputManager::menuPressed()
+{
+    return menuButton.pressed();
+}
+
 void InputManager::endFrame()
 {
     saveButton.previous =
@@ -167,4 +183,10 @@ void InputManager::endFrame()
 
     previousSlotButton.previous =
         previousSlotButton.current;
+
+    pauseButton.previous =
+        pauseButton.current;
+
+    menuButton.previous =
+        menuButton.current;
 }

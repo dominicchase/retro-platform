@@ -87,8 +87,6 @@ bool Emulator::init(
         return false;
     }
 
-    state.runtimeState = RuntimeState::SaveMenu;
-
     std::filesystem::path path(romPath);
 
     state.currentGameName = path.stem().string();
@@ -138,6 +136,28 @@ void Emulator::run()
 
         input.update();
 
+        if (input.pausePressed())
+        {
+            if (state.runtimeState == RuntimeState::Running)
+            {
+                state.runtimeState = RuntimeState::Paused;
+                std::cout << "Paused\n";
+            }
+            else if (state.runtimeState == RuntimeState::Paused)
+            {
+                state.runtimeState = RuntimeState::Running;
+                std::cout << "Resumed\n";
+            }
+        }
+
+        if (state.runtimeState == RuntimeState::Paused &&
+            input.menuPressed())
+        {
+            state.runtimeState = RuntimeState::SaveMenu;
+
+            std::cout << "Save Menu Opened\n";
+        }
+
         switch (state.runtimeState)
         {
         case RuntimeState::Running:
@@ -149,6 +169,13 @@ void Emulator::run()
 
         case RuntimeState::SaveMenu:
             updateSaveMenu();
+
+            if (input.pausePressed())
+            {
+                state.runtimeState = RuntimeState::Paused;
+                std::cout << "Save Menu Closed\n";
+            }
+
             break;
         }
 
