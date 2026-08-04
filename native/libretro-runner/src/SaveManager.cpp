@@ -145,8 +145,51 @@ std::string SaveManager::getSaveTime(
     return stream.str();
 }
 
+bool SaveManager::saveMetadata(
+    const SaveMetadata &metadata)
+{
+    std::ofstream file(
+        getMetadataFilename(
+            metadata.gameName,
+            metadata.slotNumber));
+
+    if (!file)
+    {
+        return false;
+    }
+
+    file << "game="
+         << metadata.gameName
+         << "\n";
+
+    file << "slot="
+         << metadata.slotNumber
+         << "\n";
+
+    file << "date="
+         << metadata.date
+         << "\n";
+
+    file << "time="
+         << metadata.time
+         << "\n";
+
+    return true;
+}
+
 std::string SaveManager::getGameDirectory(
     const std::string &gameName) const
 {
     return saveRoot + gameName + "/";
+}
+
+std::string SaveManager::getMetadataFilename(
+    const std::string &gameName,
+    int slot) const
+{
+    return getGameDirectory(gameName) +
+           gameName +
+           ".slot" +
+           std::to_string(slot) +
+           ".meta";
 }

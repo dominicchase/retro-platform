@@ -2,6 +2,11 @@
 #include <filesystem>
 #include <SDL2/SDL.h>
 #include <vector>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
 #include "Emulator.h"
 
 bool Emulator::init(
@@ -173,6 +178,41 @@ void Emulator::saveTestState()
             getSaveFilename(currentSaveSlot),
             buffer))
     {
+        SaveMetadata metadata;
+
+        metadata.slotNumber =
+            currentSaveSlot;
+
+        metadata.gameName =
+            currentGameName;
+
+        auto now =
+            std::chrono::system_clock::now();
+
+        auto time =
+            std::chrono::system_clock::to_time_t(now);
+
+        std::tm local{};
+
+        localtime_s(
+            &local,
+            &time);
+
+        std::stringstream date;
+        date << std::put_time(
+            &local,
+            "%m/%d/%Y");
+
+        std::stringstream clock;
+        clock << std::put_time(
+            &local,
+            "%I:%M %p");
+
+        metadata.date = date.str();
+        metadata.time = clock.str();
+
+        saveManager.saveMetadata(metadata);
+
         std::cout << "State saved!\n";
 
         auto slots =
