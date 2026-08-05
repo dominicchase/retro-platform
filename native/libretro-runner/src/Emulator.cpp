@@ -136,10 +136,15 @@ void Emulator::run()
 
         input.update();
 
-        EmulatorCommand command =
+        EmulatorCommand inputCommand =
             input.getCommand();
 
-        handleCommand(command);
+        handleCommand(inputCommand);
+
+        EmulatorCommand queuedCommand =
+            commandQueue.pop();
+
+        handleCommand(queuedCommand);
 
         switch (state.runtimeState)
         {
@@ -371,4 +376,15 @@ void Emulator::setCurrentSlot(int slot)
             << state.currentSaveSlot
             << std::endl;
     }
+}
+
+void Emulator::stop()
+{
+    running = false;
+}
+
+void Emulator::queueCommand(
+    EmulatorCommand command)
+{
+    commandQueue.push(command);
 }

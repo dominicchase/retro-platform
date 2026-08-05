@@ -34,4 +34,20 @@ export class LibretroRunner {
       this.process = null;
     });
   }
+
+  async pause(): Promise<void> {
+    console.log("Pause emulator");
+  }
+
+  async resume(): Promise<void> {
+    console.log("Resume emulator");
+  }
+
+  async save(): Promise<void> {
+    console.log("Save state");
+  }
+
+  async load(): Promise<void> {
+    console.log("Load state");
+  }
 }

@@ -1,6 +1,6 @@
 #define SDL_MAIN_HANDLED
 
-#include "Emulator.h"
+#include "EmulatorRunner.h"
 #include "EmulatorController.h"
 #include "EmulatorBridge.h"
 
@@ -8,30 +8,14 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc < 3)
-    {
-        std::cout
-            << "Usage: libretro-runner <core.dll> <rom>\n";
 
-        return 1;
-    }
+    EmulatorRunner runner;
 
-    Emulator emulator;
+    runner.start(
+        argv[1],
+        argv[2]);
 
-    if (!emulator.init(
-            argv[1],
-            argv[2]))
-    {
-        return 1;
-    }
-
-    EmulatorController controller(&emulator);
-
-    setEmulatorController(&controller);
-
-    emulator.run();
-
-    emulator.shutdown();
+    runner.stop();
 
     return 0;
 }

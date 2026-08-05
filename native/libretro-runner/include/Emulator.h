@@ -11,6 +11,7 @@
 #include "SaveManager.h"
 #include "EmulatorState.h"
 #include "EmulatorCommand.h"
+#include "EmulatorCommandQueue.h"
 
 class Emulator
 {
@@ -37,9 +38,14 @@ public:
 
     void resume();
 
+    void stop();
+
     int getCurrentSlot() const;
 
     void setCurrentSlot(int slot);
+
+    void queueCommand(
+        EmulatorCommand command);
 
 private:
     void updateSaveMenu();
@@ -61,4 +67,6 @@ private:
     bool running = false;
 
     EmulatorState state;
+
+    EmulatorCommandQueue commandQueue;
 };

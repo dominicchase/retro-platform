@@ -20,7 +20,8 @@ add_executable(libretro-runner
     src/SaveManager.cpp
     src/EmulatorController.cpp
     src/EmulatorBridge.cpp
-    
+    src/EmulatorRunner.cpp
+    src/EmulatorCommandQueue.cpp
 )
 
 target_include_directories(libretro-runner PRIVATE
