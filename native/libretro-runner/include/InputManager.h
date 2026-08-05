@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include "EmulatorCommand.h"
 
 struct ButtonState
 {
@@ -33,6 +34,8 @@ public:
     bool pausePressed();
 
     bool menuPressed();
+
+    EmulatorCommand getCommand();
 
 private:
     bool buttons[16] = {};

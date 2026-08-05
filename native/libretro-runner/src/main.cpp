@@ -1,6 +1,9 @@
 #define SDL_MAIN_HANDLED
 
 #include "Emulator.h"
+#include "EmulatorController.h"
+#include "EmulatorBridge.h"
+
 #include <iostream>
 
 int main(int argc, char *argv[])
@@ -21,6 +24,10 @@ int main(int argc, char *argv[])
     {
         return 1;
     }
+
+    EmulatorController controller(&emulator);
+
+    setEmulatorController(&controller);
 
     emulator.run();
 

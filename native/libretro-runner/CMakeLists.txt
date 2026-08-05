@@ -18,6 +18,8 @@ add_executable(libretro-runner
     src/AudioManager.cpp
     src/FrameLimiter.cpp
     src/SaveManager.cpp
+    src/EmulatorController.cpp
+    src/EmulatorBridge.cpp
     
 )
 

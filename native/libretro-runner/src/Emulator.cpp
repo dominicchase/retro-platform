@@ -136,27 +136,10 @@ void Emulator::run()
 
         input.update();
 
-        if (input.pausePressed())
-        {
-            if (state.runtimeState == RuntimeState::Running)
-            {
-                state.runtimeState = RuntimeState::Paused;
-                std::cout << "Paused\n";
-            }
-            else if (state.runtimeState == RuntimeState::Paused)
-            {
-                state.runtimeState = RuntimeState::Running;
-                std::cout << "Resumed\n";
-            }
-        }
+        EmulatorCommand command =
+            input.getCommand();
 
-        if (state.runtimeState == RuntimeState::Paused &&
-            input.menuPressed())
-        {
-            state.runtimeState = RuntimeState::SaveMenu;
-
-            std::cout << "Save Menu Opened\n";
-        }
+        handleCommand(command);
 
         switch (state.runtimeState)
         {
@@ -168,14 +151,6 @@ void Emulator::run()
             break;
 
         case RuntimeState::SaveMenu:
-            updateSaveMenu();
-
-            if (input.pausePressed())
-            {
-                state.runtimeState = RuntimeState::Paused;
-                std::cout << "Save Menu Closed\n";
-            }
-
             break;
         }
 
@@ -198,7 +173,7 @@ void Emulator::shutdown()
     SDL_Quit();
 }
 
-void Emulator::saveTestState()
+void Emulator::saveState()
 {
     std::vector<uint8_t> buffer;
 
@@ -279,7 +254,7 @@ void Emulator::saveTestState()
     }
 }
 
-void Emulator::loadTestState()
+void Emulator::loadState()
 {
     std::vector<uint8_t> buffer;
 
@@ -329,25 +304,71 @@ void Emulator::changeSaveSlot(int amount)
         << std::endl;
 }
 
-void Emulator::updateSaveMenu()
+void Emulator::handleCommand(EmulatorCommand command)
 {
-    if (input.nextSlotPressed())
+    switch (command)
     {
-        changeSaveSlot(1);
-    }
+    case EmulatorCommand::None:
+        break;
 
-    if (input.previousSlotPressed())
-    {
-        changeSaveSlot(-1);
-    }
+    case EmulatorCommand::Pause:
 
-    if (input.savePressed())
-    {
-        saveTestState();
-    }
+        if (state.runtimeState == RuntimeState::Running)
+        {
+            state.runtimeState = RuntimeState::Paused;
+            std::cout << "Paused\n";
+        }
+        else
+        {
+            state.runtimeState = RuntimeState::Running;
+            std::cout << "Resumed\n";
+        }
 
-    if (input.loadPressed())
+        break;
+
+    case EmulatorCommand::OpenMenu:
+        state.runtimeState = RuntimeState::SaveMenu;
+        std::cout << "Menu opened\n";
+        break;
+
+    case EmulatorCommand::Save:
+        saveState();
+        break;
+
+    case EmulatorCommand::Load:
+        loadState();
+        break;
+    }
+}
+
+void Emulator::pause()
+{
+    state.runtimeState = RuntimeState::Paused;
+
+    std::cout << "Paused\n";
+}
+
+void Emulator::resume()
+{
+    state.runtimeState = RuntimeState::Running;
+
+    std::cout << "Resumed\n";
+}
+
+int Emulator::getCurrentSlot() const
+{
+    return state.currentSaveSlot;
+}
+
+void Emulator::setCurrentSlot(int slot)
+{
+    if (slot >= 0 && slot <= 9)
     {
-        loadTestState();
+        state.currentSaveSlot = slot;
+
+        std::cout
+            << "Current save slot: "
+            << state.currentSaveSlot
+            << std::endl;
     }
 }

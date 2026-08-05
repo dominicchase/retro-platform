@@ -10,6 +10,7 @@
 #include "FrameLimiter.h"
 #include "SaveManager.h"
 #include "EmulatorState.h"
+#include "EmulatorCommand.h"
 
 class Emulator
 {
@@ -22,13 +23,23 @@ public:
 
     void shutdown();
 
-    void saveTestState();
+    void saveState();
 
-    void loadTestState();
+    void loadState();
 
     std::string getSaveFilename(int slot) const;
 
     void changeSaveSlot(int amount);
+
+    void handleCommand(EmulatorCommand command);
+
+    void pause();
+
+    void resume();
+
+    int getCurrentSlot() const;
+
+    void setCurrentSlot(int slot);
 
 private:
     void updateSaveMenu();

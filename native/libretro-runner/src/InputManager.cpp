@@ -190,3 +190,28 @@ void InputManager::endFrame()
     menuButton.previous =
         menuButton.current;
 }
+
+EmulatorCommand InputManager::getCommand()
+{
+    if (pauseButton.pressed())
+    {
+        return EmulatorCommand::Pause;
+    }
+
+    if (menuButton.pressed())
+    {
+        return EmulatorCommand::OpenMenu;
+    }
+
+    if (saveButton.pressed())
+    {
+        return EmulatorCommand::Save;
+    }
+
+    if (loadButton.pressed())
+    {
+        return EmulatorCommand::Load;
+    }
+
+    return EmulatorCommand::None;
+}
